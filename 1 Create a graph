@@ -1,0 +1,52 @@
+import java.util.*;
+
+public class Graph {
+    static class Edge{
+        int src;
+        int nbr;
+        int wt;
+        Edge(int src, int nbr, int wt){
+            this.src=src;
+            this.nbr=nbr;
+            this.wt=wt;
+        }
+        public String toString(){
+            return String.valueOf(src+"-"+nbr+"-"+wt);
+        }
+    }
+    
+    public static ArrayList<ArrayList<Edge>> createGraphAtRuntime(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter how many vertices you want to enter");
+        int vertices = sc.nextInt();
+        ArrayList<ArrayList<Edge>> adjacencyList = new ArrayList<>();
+        for(int i=0;i<vertices;i++){
+            boolean flag=true;
+            int x = 1;
+            ArrayList<Edge> nthList= new ArrayList<>();
+            while(flag){
+                System.out.println("Enter No"+(x++)+" vertex and weight connected with No"+i+" vertex");
+                nthList.add(new Edge(i,sc.nextInt(),sc.nextInt()));
+                System.out.println("Add one more edge to No"+i+" vertex\n Y for yes else No");
+                if(!sc.next().equalsIgnoreCase("Y"))
+                    flag = false;
+            }
+            adjacencyList.add(nthList);
+        }
+        return adjacencyList;
+    }
+    public static void display(ArrayList<ArrayList<Edge>> adjacencyList){
+        int n = adjacencyList.size();
+        for(int i=0;i<n;i++){
+            System.out.print(i);
+            for(int j=0;j<adjacencyList.get(i).size();j++){
+                System.out.print("-->"+adjacencyList.get(i).get(j));
+            }
+            System.out.println();
+        }
+    }
+    public static void main(String args[]) {
+        display(createGraphAtRuntime());
+    }
+    //Input you can use - 4 1 1 Y 2 1 Y 3 1 N 0 2 Y 2 2 Y 3 2 N 0 3 Y 1 3 Y 3 3 N 0 4 Y 1 4 Y 2 4 N
+}
