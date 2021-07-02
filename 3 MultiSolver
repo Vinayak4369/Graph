@@ -1,0 +1,117 @@
+import java.util.*;
+
+public class MyClass{
+    static class Edge implements Comparable<Edge>{
+        int src, nbr, wt;
+        Edge(int src, int nbr, int wt){
+            this.src = src;
+            this.nbr = nbr;
+            this.wt = wt;
+        }
+        public int compareTo(Edge e){
+            return this.nbr - e.nbr;
+        }
+    }
+    
+    public static int smallestPath = Integer.MAX_VALUE;
+    public static int largestPath = Integer.MIN_VALUE;
+    public static int cielPath = Integer.MAX_VALUE;
+    public static int floorPath = Integer.MIN_VALUE;
+    public static int kthLargePath = Integer.MIN_VALUE;
+    public static PriorityQueue<Integer> pq= new PriorityQueue<>();
+    public static String sp = "", lp = "", cp = "", fp = "", kp = "";
+    
+    public static void multiSolver(int src, int dest, ArrayList<ArrayList<Edge>> adj, boolean []visited, String psf, int wsf, int criteria, int kthLarge){
+        if(src==dest){
+            if(wsf>largestPath){
+                largestPath = wsf;
+                lp = psf;
+            }
+            if(wsf<smallestPath){
+                smallestPath = wsf;
+                sp = psf;
+            }
+            if(wsf<criteria && wsf>floorPath){
+                floorPath = wsf;
+                fp = psf;
+            }
+            if(wsf>criteria && wsf<cielPath){
+                cielPath = wsf;
+                cp = psf;
+            }
+            if(pq.size()<kthLarge){
+                pq.add(wsf);
+                kp = psf;
+                kthLargePath = pq.peek();
+            }else{
+                if(pq.peek()<wsf){
+                    pq.remove();
+                    pq.add(wsf);
+                    kp = psf;
+                    kthLargePath = pq.peek();
+                }
+            }
+            return;
+        }
+        visited[src] = true;
+        for(Edge e : adj.get(src)){
+            if(visited[e.nbr]==false){
+                multiSolver(e.nbr,dest,adj,visited,psf+e.nbr,wsf+e.wt,criteria,kthLarge);
+            }
+        }
+        visited[src] = false;
+    }
+    
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        int v = sc.nextInt(); 
+        int e = sc.nextInt();
+        ArrayList<ArrayList<Edge>> adj = new ArrayList<>(v+1);
+        for(int i=0;i<=v;i++){
+            adj.add(new ArrayList<Edge>());
+        }
+        for(int i=0;i<e;i++){
+            int src = sc.nextInt();
+            int nbr = sc.nextInt();
+            int wt = sc.nextInt();
+            adj.get(src).add(new Edge(src,nbr,wt));
+            adj.get(nbr).add(new Edge(nbr,src,wt));
+        }
+        int src = sc.nextInt();
+        int dest = sc.nextInt();
+        int criteria = sc.nextInt();
+        int kthLarge = sc.nextInt();
+        boolean visited[] = new boolean[v+1];
+        multiSolver(src,dest,adj,visited,String.valueOf(src),0,criteria,kthLarge);
+        System.out.println("SmallestPath@Weight= \t\t\t\t"+sp+"@"+smallestPath);
+        System.out.println("LongestPath@Weight= \t\t\t\t"+lp+"@"+largestPath);
+        System.out.println("CielPath(criteria-"+criteria+")@Weight= \t\t"+cp+"@"+cielPath);
+        System.out.println("FloorPath(criteria-"+criteria+")@Weight= \t\t"+fp+"@"+floorPath);
+        System.out.println(kthLarge+"thLargestPath@Weight= \t\t\t\t"+kp+"@"+kthLargePath);
+    }
+}
+/* INPUT
+    7 8
+    4 6 8
+    5 6 3
+    4 5 3
+    3 4 2
+    0 3 40
+    2 3 10
+    1 2 10
+    0 1 10
+    0
+    6
+    40
+    3
+    
+    
+   OUTPUT
+    SmallestPath@Weight= 				0123456@38
+    LongestPath@Weight= 				0346@50
+    CielPath(criteria-40)@Weight= 		03456@48
+    FloorPath(criteria-40)@Weight= 		0123456@38
+    3thLargestPath@Weight= 				012346@40
+    
+    
+*/
