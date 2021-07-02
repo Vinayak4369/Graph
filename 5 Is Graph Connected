@@ -1,0 +1,74 @@
+import java.util.*;
+public class MyClass{
+    static class Edge{
+        int src;
+        int nbr;
+        int wt;
+        Edge(int src, int nbr, int wt){
+            this.src = src;
+            this.nbr = nbr;
+            this.wt = wt;
+        }
+    }
+    
+    public static void isGraphConnected(int src, ArrayList<ArrayList<Edge>> adj, boolean []visited){
+        visited[src] = true;
+        for(Edge e : adj.get(src)){
+            if(visited[e.nbr]==false)
+                isGraphConnected(e.nbr,adj,visited);
+        }
+    }
+    
+    public static void main(String []args){
+        Scanner sc = new Scanner(System.in);
+        int v = sc.nextInt();
+        int e = sc.nextInt();
+        ArrayList<ArrayList<Edge>> adj = new ArrayList<>(v+1);
+        for(int i=0;i<=v;i++){
+            adj.add(new ArrayList<Edge>());
+        }
+        for(int i=0;i<e;i++){
+            int src = sc.nextInt(), nbr = sc.nextInt(), wt = sc.nextInt();
+            adj.get(src).add(new Edge(src,nbr,wt));
+            adj.get(nbr).add(new Edge(nbr,src,wt));
+        }
+        boolean visited[] = new boolean[v];
+        Arrays.fill(visited,false);
+        isGraphConnected(0,adj,visited);
+        for(boolean x : visited){
+            if(!x){
+                System.out.println(x);
+                return;
+            }
+        }
+        System.out.println(true);
+    }
+}
+/*
+Input is
+7 5
+0 1 10
+2 3 10
+4 5 10
+5 6 10
+4 6 10
+
+Output is
+false
+
+
+
+Input is
+7 8
+4 6 10
+5 6 10
+4 5 10
+3 4 10
+0 3 10
+2 3 10
+1 2 10
+0 1 10
+
+Output is
+true
+*/
