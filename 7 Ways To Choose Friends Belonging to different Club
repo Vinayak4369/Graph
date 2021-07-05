@@ -1,0 +1,59 @@
+import java.util.*;
+public class MyClass {
+    static class Edge{
+        int src,nbr,wt;
+        Edge(int src, int nbr, int wt){
+            this.src = src;
+            this.nbr = nbr;
+            this.wt = wt;
+        }
+    }    
+    public static ArrayList<ArrayList<Integer>> clubs = new ArrayList<>();    
+    public static void solve(int src, HashMap<Integer,HashSet<Edge>> adj, HashSet<Integer> visited, ArrayList<Integer> friends){
+        visited.add(src);
+        friends.add(src);
+        for(Edge e : adj.get(src)){
+            if(visited.contains(e.nbr))
+                continue;
+            solve(e.nbr,adj,visited,friends);
+        }
+    }    
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int e = sc.nextInt();
+        HashMap<Integer,HashSet<Edge>> adj = new HashMap<>();
+        for(int i=0;i<e;i++){
+            int src = sc.nextInt(), nbr=sc.nextInt(), wt=sc.nextInt();
+            if(adj.containsKey(src)){
+                adj.get(src).add(new Edge(src,nbr,wt));
+            }else{
+                adj.put(src,new HashSet<Edge>());
+                adj.get(src).add(new Edge(src,nbr,wt));
+            }
+            if(adj.containsKey(nbr)){
+                adj.get(nbr).add(new Edge(nbr,src,wt));
+            }else{
+                adj.put(nbr,new HashSet<Edge>());
+                adj.get(nbr).add(new Edge(nbr,src,wt));
+            }
+        }
+        HashSet<Integer> visited = new HashSet<>();
+        ArrayList<ArrayList<Integer>> clubs = new ArrayList<>();
+        for(int src : adj.keySet()){
+            if(visited.contains(src)){
+                continue;
+            }
+            ArrayList<Integer> friends = new ArrayList<>();
+            solve(src, adj, visited, friends);
+            clubs.add(friends);
+        }
+        int sum = 0;
+        for(int i=0;i<clubs.size()-1;i++){
+            for(int j=i+1;j<clubs.size();j++){
+                sum += clubs.get(i).size()*clubs.get(j).size();
+            }
+        }
+        System.out.println(sum);
+    }
+}
