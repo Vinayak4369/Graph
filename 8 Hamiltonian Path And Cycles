@@ -1,0 +1,54 @@
+import java.util.*;
+public class MyClass {
+    
+    public static void printHamiltonianPathAndCycles(int src, int current, HashMap<Integer,HashSet<Integer>> adj, HashSet<Integer> visited, int v, String psf){
+        if(visited.contains(current)){
+            return;
+        }
+        visited.add(current);
+        if(visited.size()==v){
+            if(adj.get(current).contains(src)){
+                System.out.println(psf+" is Hamiltonian Cycle");
+            }
+            else{
+                System.out.println(psf+" is Hamiltonian Path");
+            }
+            visited.remove(current);
+            return;
+        }
+        for(int nbr : adj.get(current)){
+            if(visited.contains(nbr))
+                continue;
+            printHamiltonianPathAndCycles(src,nbr,adj,visited,v,psf+nbr+" ");
+        }
+        visited.remove(current);
+    }
+    
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        int v = sc.nextInt();
+        int e = sc.nextInt();
+        HashMap<Integer,HashSet<Integer>> adj = new HashMap<>();
+        for(int i=0;i<e;i++){
+            int src = sc.nextInt();
+            int nbr = sc.nextInt();
+            if(adj.containsKey(src)){
+                adj.get(src).add(nbr);
+            }else{
+                HashSet<Integer> temp = new HashSet<>();
+                temp.add(nbr);
+                adj.put(src,temp);
+            }
+            if(adj.containsKey(nbr)){
+                adj.get(nbr).add(src);
+            }else{
+                HashSet<Integer> temp = new HashSet<>();
+                temp.add(src);
+                adj.put(nbr,temp);
+            }
+        }
+        HashSet<Integer> visited = new HashSet<>();
+        int src = sc.nextInt();
+        printHamiltonianPathAndCycles(src,src,adj,visited,v,src+" ");
+    }
+}
