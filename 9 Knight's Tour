@@ -1,0 +1,42 @@
+import java.util.*;
+
+public class MyClass {
+    static int x = 0;
+    public static void display(int n, int r, int c, int [][]chess, int move){
+        x++;
+        if(r<0 || c<0 || r>=n || c>=n || chess[r][c]>0)
+            return;
+        if(move == (n*n)){
+            chess[r][c] = move;
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++){
+                    System.out.print(chess[i][j]+"  ");
+                }
+                System.out.println("\n");
+            }
+            System.out.println("\n\n");
+            chess[r][c]=0;
+            return;
+        }
+        chess[r][c] = move;
+        display(n,r-2,c+1,chess,move+1);
+        display(n,r-1,c+2,chess,move+1);
+        display(n,r+1,c+2,chess,move+1);
+        display(n,r+2,c+1,chess,move+1);
+        display(n,r+2,c-1,chess,move+1);
+        display(n,r+1,c-2,chess,move+1);
+        display(n,r-1,c-2,chess,move+1);
+        display(n,r-2,c-1,chess,move+1);
+        chess[r][c] = 0;
+    }
+    
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt(); //size of chess board
+        int r = sc.nextInt(); //row of first move
+        int c = sc.nextInt(); //column of first move
+        int chess[][] = new int[n][n];
+        display(n,r,c,chess,1);
+        System.out.println(x);
+    }
+}
