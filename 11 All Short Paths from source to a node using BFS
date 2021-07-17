@@ -8,6 +8,8 @@ public class MyClass {
             this.psf = psf;
         }
     }
+    
+    //gives all short paths from a source node assuming weight on each edge as same
     public static void BFS(int src, int des, HashMap<Integer,HashSet<Integer>> adj, HashSet<Integer> visited){
         Queue<Pair> q = new LinkedList<>();
         q.add(new Pair(src,src+" "));
