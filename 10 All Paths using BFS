@@ -1,0 +1,69 @@
+import java.util.*;
+public class MyClass {
+    static class Pair{
+        int src;
+        String psf;
+        Pair(int src, String psf){
+            this.src = src;
+            this.psf = psf;
+        }
+    }
+    public static void BFS(int src, int des, HashMap<Integer,HashSet<Integer>> adj, HashSet<Integer> visited){
+        Queue<Pair> q = new LinkedList<>();
+        q.add(new Pair(src,src+" "));
+        visited.add(src);
+        while(q.size()!=0){
+            Pair tempSrc = q.remove();
+            int newSrc = tempSrc.src;
+            for(int nbr : adj.get(newSrc)){
+                if(!visited.contains(nbr)){
+                    visited.add(nbr);
+                    q.add(new Pair(nbr,tempSrc.psf+nbr+" "));
+                }
+            }
+            System.out.println(tempSrc.psf);//print all paths from Node using BFS
+        }
+    }
+    
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        int v = sc.nextInt();
+        int e = sc.nextInt();
+        HashMap<Integer,HashSet<Integer>> adj = new HashMap<>();
+        for(int i=0;i<e;i++){
+            int src = sc.nextInt();
+            int nbr = sc.nextInt();
+            if(adj.containsKey(src)){
+                adj.get(src).add(nbr);
+            }else{
+                adj.put(src,new HashSet<Integer>());
+                adj.get(src).add(nbr);
+            }
+            if(adj.containsKey(nbr)){
+                adj.get(nbr).add(src);
+            }else{
+                adj.put(nbr,new HashSet<Integer>());
+                adj.get(nbr).add(src);
+            }
+        }
+        int src = sc.nextInt();
+        int des = sc.nextInt();
+        HashSet<Integer> visited = new HashSet<>();
+        BFS(src,des,adj,visited);
+    }
+}
+/*
+INPUT IS
+9 
+8
+1 2
+1 3
+2 4
+2 5
+3 6
+3 7
+5 8
+6 9
+1 
+4
+*/
