@@ -1,0 +1,70 @@
+import java.util.*;
+
+public class MyClass {
+    
+    static class Pair{
+        int v, level;
+        Pair(int v, int level){
+            this.v = v;
+            this.level = level;
+        }
+    }
+    
+    public static boolean checkForBipartiteness(HashMap<Integer,HashSet<Integer>> adj, int v, HashMap<Integer,Integer> visitedAtLevel){
+        Queue<Pair> q = new LinkedList<Pair>();
+        q.add(new Pair(v,0));
+        while(q.size()>0){
+            Pair src = q.remove();
+            if(visitedAtLevel.get(src.v)!=-1){
+                if(visitedAtLevel.get(src.v)!=src.level)
+                    return false;
+            }else{
+                visitedAtLevel.put(src.v,src.level);
+            }
+            for(int nbr : adj.get(src.v)){
+                if(visitedAtLevel.get(nbr)==-1)
+                    q.add(new Pair(nbr,src.level+1));
+            }
+        }
+        return true;
+    }
+    
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        int vtces = sc.nextInt();
+        int e = sc.nextInt();
+        HashMap<Integer,HashSet<Integer>> adj = new HashMap<>();
+        HashMap<Integer,Integer> visitedAtLevel = new HashMap<>();  //In the key there will be visited elements and in value there will be the level at which they are visited
+        for(int i=0;i<e;i++){
+            int src = sc.nextInt();
+            int nbr = sc.nextInt();
+            if(!adj.containsKey(src)){
+                adj.put(src,new HashSet<>());
+                visitedAtLevel.put(src,-1);
+            }
+            adj.get(src).add(nbr);
+            if(!adj.containsKey(nbr)){
+                adj.put(nbr,new HashSet<>());
+                visitedAtLevel.put(nbr,-1);
+            }
+            adj.get(nbr).add(src);
+        }
+        for(int v : adj.keySet()){
+            if(visitedAtLevel.get(v)!=-1)
+                continue;
+            if(!checkForBipartiteness(adj,v,visitedAtLevel)){
+                System.out.println(false);
+                return;
+            }
+        }
+        HashSet<Integer> set1 = new HashSet<>(), set2 = new HashSet<>();
+        for(int src : visitedAtLevel.keySet()){
+            if(visitedAtLevel.get(src)%2==0){
+                set1.add(src);
+            }else{
+                set2.add(src);
+            }
+        }
+        System.out.println(set1 + " "+ set2);
+    }
+}
